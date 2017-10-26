@@ -120,7 +120,21 @@ A string of the name of the collection.
 MONGODB_OPTIONS_*
 -----------------
 
-Please refer to the page:
+Options can be attached when the pipeline start to connect to MongoBD.
+
+If any options are needed, the name of the option can be with the prefix
+`MONGODB_OPTIONS_`, the pipeline will parse it.
+
+For example:
+
++---------------+-------------------------------+
+| option name   | in `settings.py`              |
++---------------+-------------------------------+
+| authMechanism | MONGODB_OPTIONS_authMechanism |
++---------------+-------------------------------+
+
+
+For more options, please refer to the page:
 
 `Connection String URI Format — MongoDB Manual 3.4`_
 
