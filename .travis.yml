@@ -1,0 +1,43 @@
+language: python
+sudo: false
+branches:
+  only:
+  - master
+  - "/^\\d\\.\\d+$/"
+  - "/^\\d\\.\\d+\\.\\d+(rc\\d+|\\.dev\\d+)?$/"
+matrix:
+  include:
+  - python: 3.3
+    env: TOXENV=py33
+  - python: 3.5
+    env: TOXENV=py35
+  - python: 3.6
+    env: TOXENV=py36
+install:
+- |
+  if [ "$TOXENV" = "pypy" ]; then
+    export PYENV_ROOT="$HOME/.pyenv"
+    if [ -f "$PYENV_ROOT/bin/pyenv" ]; then
+      pushd "$PYENV_ROOT" && git pull && popd
+    else
+      rm -rf "$PYENV_ROOT" && git clone --depth 1 https://github.com/yyuu/pyenv.git "$PYENV_ROOT"
+    fi
+    # get latest portable PyPy from pyenv directly (thanks to natural version sort option -V)
+    export PYPY_VERSION=`"$PYENV_ROOT/bin/pyenv" install --list |grep -o -E 'pypy-portable-[0-9][\.0-9]*$' |sort -V |tail -1`
+    "$PYENV_ROOT/bin/pyenv" install --skip-existing "$PYPY_VERSION"
+    virtualenv --python="$PYENV_ROOT/versions/$PYPY_VERSION/bin/python" "$HOME/virtualenvs/$PYPY_VERSION"
+    source "$HOME/virtualenvs/$PYPY_VERSION/bin/activate"
+  fi
+- pip install -U tox twine wheel codecov
+script: tox
+after_success:
+- codecov
+cache:
+  directories:
+  - "$HOME/.cache/pip"
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: grammy.jiang
+  password:
+    secure: KqjXFxSMPOHhTS+Sz7D+Lv8w98yNQZRENtOu+byOH9bsGGo0rHbcB6mqQB13gr1JMbvexEDUiOLJNwliNFj2jPuX5JKvSV50DXgGZgtaaNPc97tKLXyMI4jk/nw4+Mmqc7IAuDM11hWtpmpDu53/QyOJtGHrFjOA6mh+vEbYG+VwrJQXegUXFHWQPdG/wN38NxyRffQi0jrb+P3pYgNn025Ec1SFHvT0bVaE/iXZtIqcLtdlj6PPeEswu8gMnns635MzfDOtbO6nWfwPOak9+WmevXiwWhGz6h1oYgTNX6yVrDEYn9Y5p8kTBa0GEBMvqfFFDjG1x2ifx8udAK86eFRnnj5tTIi2Ry3ymuT7ufTZb/37FXs+dUiHSsblVvlUyr6NMtx79vsdM2E3JB1KgObarB3/kVDqBBReKwARl1k289m6oWDw8yCNxFespvLn72HoiYjlF0ZLpV9hqfvaOQqsz/Q6rbhZWAoZlYXgqzU5PKSdikMy3DnuyyyBMSi3HqHocus4h6GAaOhkTa5xjctqCfJIRrwnXtkz7x/xh4QCYE9peEULDzSVKTwjj4b2sOq3J/j6bxsGLCgQk5eZZcIDM+VAN0hQXpAh5hlzMEwTPZ5zedDyPkLWiDW/5FwQYAdvO/I92o78KE0RWSnZk2O+fttBTNA2RTLpSSIlIqw=

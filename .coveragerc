@@ -1,0 +1,5 @@
+[run]
+branch = true
+include = scrapy_pipeline_mongodb/*
+omit =
+  tests/*

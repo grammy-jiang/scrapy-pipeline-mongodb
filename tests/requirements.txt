@@ -1,0 +1,3 @@
+mongomock
+pytest
+pytest-cov
