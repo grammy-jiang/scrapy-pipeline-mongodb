@@ -49,6 +49,7 @@ class PipelineMongoDBAsync(GenericPipeline):
     def open_spider(self, spider: Spider):
         self.cnx = ConnectionPool(self.uri, codec_options=self.codec_options)
         self.db = getattr(self.cnx, self.settings[MONGODB_DATABASE])
+
         self.coll = getattr(self.db, self.settings[MONGODB_COLLECTION])
         self.coll.with_options(codec_options=self.codec_options)
 
