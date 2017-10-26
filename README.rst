@@ -179,10 +179,9 @@ To use this function, in `settings.py`::
 NOTE
 ====
 
-Please note: the drivers may have different api for the same operation, this
-pipeline adopted txmongo as the async driver for MongoDB, so please read the
-relative documents to make sure the customized functions can run fluently in
-this pipeline.
+The drivers may have different api for the same operation, this pipeline adopts
+txmongo as the async driver for MongoDB, please read the relative documents to
+make sure the customized functions can run fluently in this pipeline.
 
 TODO
 ====
