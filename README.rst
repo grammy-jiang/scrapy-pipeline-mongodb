@@ -75,7 +75,7 @@ Block Inspector in spider middleware, in ``settings.py``, for example::
     MONGODB_DATABASE = 'test_mongodb_async_db'
     MONGODB_COLLECTION = 'test_mongodb_async_coll'
 
-    MONGODB_OPTIONS_ = 'MONGODB_OPTIONS_'
+    # MONGODB_OPTIONS_ = 'MONGODB_OPTIONS_'
 
     MONGODB_INDEXES = [('field_0', ASCENDING),
                        (('field_0', 'field_1'), ASCENDING),
@@ -149,16 +149,16 @@ should follow the requirement which is clearly written in the scrapy documents:
 
 .. _`Item Pipeline — Scrapy 1.4.0 documentation`: https://doc.scrapy.org/en/latest/topics/item-pipeline.html#writing-your-own-item-pipelin
 
-Build-in Functions To Process Item
-==================================
+Build-in Functions For Processing Item
+======================================
 
 scrapy_pipeline_mongodb.utils.process_item.process_item
 -------------------------------------------------------
 
-This is a function to call the method `insert_one` of the collection, and return
-the item.
+This is a build-in function to call the method `insert_one` of the collection,
+and return the item.
 
-To use this function, in settings::
+To use this function, in `settings.py`::
 
     MONGODB_PROCESS_ITEM = 'scrapy_pipeline_mongodb.utils.process_item.process_item'
 
