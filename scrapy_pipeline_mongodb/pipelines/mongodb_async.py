@@ -5,7 +5,6 @@ from typing import Generator
 from bson.codec_options import DEFAULT_CODEC_OPTIONS
 from pymongo.errors import OperationFailure
 from scrapy.crawler import Crawler
-from scrapy.exceptions import NotConfigured
 from scrapy.item import Item
 from scrapy.spiders import Spider
 from scrapy.utils.misc import load_object
@@ -83,7 +82,6 @@ class PipelineMongoDBAsync(GenericPipeline):
             if self.settings.get(MONGODB_PROCESS_ITEM)
             else 'scrapy_pipeline_mongodb.utils.process_item.process_item'
         )
-
         result = yield process_item(self, item, spider)
         return result
 
@@ -96,6 +94,6 @@ class PipelineMongoDBAsync(GenericPipeline):
     def process_item_update_one(self, filter_: Dict, update: Dict,
                                 upsert: bool, spider: Spider) -> Generator:
         result = yield self.coll.update_one(filter=filter_,
-                                           update=update,
-                                           upsert=upsert)
+                                            update=update,
+                                            upsert=upsert)
         return result
