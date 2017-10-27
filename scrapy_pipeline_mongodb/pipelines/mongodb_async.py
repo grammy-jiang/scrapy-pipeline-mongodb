@@ -61,10 +61,10 @@ class PipelineMongoDBAsync(GenericPipeline):
     @inlineCallbacks
     def create_index(self, spider: Spider):
         results = []
-        for field, _order, kwargs in self.settings.get(MONGODB_INDEXES, list()):
+        for field, _order, *args in self.settings.get(MONGODB_INDEXES, list()):
             try:
                 _ = yield self.coll.create_index(
-                    txfilter.sort(_order(field)), **kwargs)
+                    txfilter.sort(_order(field)), **args[0])
                 results.append(_)
             except OperationFailure:
                 pass
