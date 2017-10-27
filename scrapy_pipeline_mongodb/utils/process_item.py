@@ -11,4 +11,4 @@ from twisted.internet.defer import inlineCallbacks
 @inlineCallbacks
 def process_item(pipeline, item: Item, spider: Spider):
     result = yield pipeline.coll.insert_one(item)
-    return result
+    return item

@@ -32,10 +32,17 @@ def _gen_mongo_path(settings: Settings) -> str:
 
 
 def _gen_mongo_option(settings: Settings) -> str:
-    return '&'.join(
-        map(lambda x: '{option}={value}'.format(
-            option=x[0].replace(MONGODB_OPTIONS_, '').lower(),
-            value=x[1]),
-            filter(lambda x: all([x[0].startswith(MONGODB_OPTIONS_),
-                                  x[0].replace(MONGODB_OPTIONS_, '')]),
-                   settings.items())))
+    options = list(filter(
+        lambda x: all([x[0].startswith(MONGODB_OPTIONS_),
+                       x[0].replace(MONGODB_OPTIONS_, '')]),
+        settings.items()
+    ))
+    if options:
+        return '?{options}'.format(
+            options='&'.join(map(
+                lambda x: '{option}={value}'.format(
+                    option=x[0].replace(MONGODB_OPTIONS_, '').lower(),
+                    value=x[1]),
+                options)))
+    else:
+        return ''

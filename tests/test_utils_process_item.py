@@ -1,8 +1,6 @@
 import pprint
 
 import mongomock
-from pymongo.results import InsertOneResult
-from pymongo.results import UpdateResult
 from scrapy import Field
 from scrapy import Item
 from scrapy import Spider
@@ -18,6 +16,7 @@ from scrapy_pipeline_mongodb.settings.default_settings import MONGODB_OPTIONS_
 from scrapy_pipeline_mongodb.settings.default_settings import MONGODB_PASSWORD
 from scrapy_pipeline_mongodb.settings.default_settings import MONGODB_PORT
 from scrapy_pipeline_mongodb.settings.default_settings import MONGODB_USERNAME
+from scrapy_pipeline_mongodb.utils.process_item import process_item
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -28,7 +27,7 @@ class ItemTest(Item):
     field_1 = Field()
 
 
-class TestMongoDBAsync(TestCase):
+class ProcessItemTest(TestCase):
     settings_dict = {
         MONGODB_COLLECTION: 'test_mongodb_async',
         MONGODB_DATABASE: 'test_mongodb_async',
@@ -46,12 +45,6 @@ class TestMongoDBAsync(TestCase):
         self.crawler = get_crawler(Spider, self.settings_dict)
         self.spider = self.crawler._create_spider('foo')
 
-    # TODO: ADD UNIT TEST FOR THIS FUNCTION
-    # the api of create_index in txmongo is different with the one in mongomock
-    # @defer.inlineCallbacks
-    # def test_create_index(self):
-    #     pass
-
     @defer.inlineCallbacks
     def test_process_item(self):
         pipeline = PipelineMongoDBAsync.from_crawler(crawler=self.crawler)
@@ -59,40 +52,6 @@ class TestMongoDBAsync(TestCase):
 
         item = ItemTest({'field_0': 0, 'field_1': 1})
 
-        result = yield pipeline.process_item(item, self.spider)
+        result = yield process_item(pipeline, item, self.spider)
 
-        self.assertDictEqual(result.__dict__, item.__dict__)
-
-    @defer.inlineCallbacks
-    def test_process_item_insert_one(self):
-        pipeline = PipelineMongoDBAsync.from_crawler(crawler=self.crawler)
-        pipeline.coll = mongomock.MongoClient().db.collection
-
-        item = ItemTest({'field_0': 0, 'field_1': 1})
-        result = yield pipeline.process_item_insert_one(item, self.spider)
-
-        self.assertIsInstance(result, InsertOneResult)
-
-        self.assertDictEqual(
-            dict(item),
-            dict(pipeline.coll.find_one({'_id': result.inserted_id})))
-
-    @defer.inlineCallbacks
-    def test_process_item_update_one(self):
-        pipeline = PipelineMongoDBAsync.from_crawler(crawler=self.crawler)
-        pipeline.coll = mongomock.MongoClient().db.collection
-
-        item = ItemTest({'field_0': 0, 'field_1': 1})
-
-        result = yield pipeline.process_item_update_one(
-            filter_={'field_0': 0},
-            update={'$set': item},
-            upsert=True,
-            spider=self.spider)
-
-        self.assertIsInstance(result, UpdateResult)
-
-        item.update({'_id': result.upserted_id})
-        self.assertDictEqual(
-            dict(item),
-            dict(pipeline.coll.find_one({'_id': result.upserted_id})))
+        self.assertEqual(result.__dict__, item.__dict__)
