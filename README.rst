@@ -3,19 +3,19 @@ Scrapy-Pipeline-MongoDB
 =======================
 
 .. image:: https://img.shields.io/pypi/v/scrapy-pipeline-mongodb.svg
-   :target: https://pypi.python.org/pypi/scrapy-pipeline-mongodb
+    :target: https://pypi.python.org/pypi/scrapy-pipeline-mongodb
    :alt: PyPI Version
 
 .. image:: https://img.shields.io/travis/grammy-jiang/scrapy-pipeline-mongodb/master.svg
-   :target: http://travis-ci.org/grammy-jiang/scrapy-pipeline-mongodb
+    :target: http://travis-ci.org/grammy-jiang/scrapy-pipeline-mongodb
    :alt: Build Status
 
 .. image:: https://img.shields.io/badge/wheel-yes-brightgreen.svg
-   :target: https://pypi.python.org/pypi/scrapy-pipeline-mongodb
+    :target: https://pypi.python.org/pypi/scrapy-pipeline-mongodb
    :alt: Wheel Status
 
 .. image:: https://img.shields.io/codecov/c/github/grammy-jiang/scrapy-pipeline-mongodb/master.svg
-   :target: http://codecov.io/github/grammy-jiang/scrapy-pipeline-mongodb?branch=master
+    :target: http://codecov.io/github/grammy-jiang/scrapy-pipeline-mongodb?branch=master
    :alt: Coverage report
 
 Overview
@@ -64,7 +64,7 @@ Block Inspector in spider middleware, in ``settings.py``, for example::
     # PIPELINE MONGODB ASYNC
     # -----------------------------------------------------------------------------
 
-    ITEM_PIPELINE.update({
+    ITEM_PIPELINES.update({
         'scrapy_pipeline_mongodb.pipelines.mongodb_async.PipelineMongoDBAsync': 500,
     })
 
@@ -77,9 +77,9 @@ Block Inspector in spider middleware, in ``settings.py``, for example::
 
     # MONGODB_OPTIONS_ = 'MONGODB_OPTIONS_'
 
-    MONGODB_INDEXES = [('field_0', ASCENDING),
+    MONGODB_INDEXES = [('field_0', ASCENDING, {'unique': True}),
                        (('field_0', 'field_1'), ASCENDING),
-                       (('field_0', ASCENDING), ('field_0', DESCENDING))],
+                       (('field_0', ASCENDING), ('field_0', DESCENDING))]
 
     MONGODB_PROCESS_ITEM = 'scrapy_pipeline_mongodb.utils.process_item.process_item'
 
@@ -115,7 +115,7 @@ A string of the name of the database.
 MONGODB_COLLECTION
 ------------------
 
-A string of the name of the collection.
+A list of the indexes to create on the collection.
 
 MONGODB_OPTIONS_*
 -----------------
