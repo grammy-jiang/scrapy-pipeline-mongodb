@@ -78,8 +78,8 @@ Block Inspector in spider middleware, in ``settings.py``, for example::
     # MONGODB_OPTIONS_ = 'MONGODB_OPTIONS_'
 
     MONGODB_INDEXES = [('field_0', ASCENDING, {'unique': True}),
-                       (('field_0', 'field_1'), ASCENDING, {}),
-                       (('field_0', ASCENDING, {}), ('field_0', DESCENDING, {}))]
+                       (('field_0', 'field_1'), ASCENDING),
+                       (('field_0', ASCENDING), ('field_0', DESCENDING))]
 
     MONGODB_PROCESS_ITEM = 'scrapy_pipeline_mongodb.utils.process_item.process_item'
 

@@ -34,6 +34,10 @@ class PipelineMongoDBAsync(GenericPipeline):
         self.cnx = None
         self.db = None
         self.coll = None
+        self._process_item = load_object(
+            self.settings[MONGODB_PROCESS_ITEM]
+            if self.settings.get(MONGODB_PROCESS_ITEM)
+            else 'scrapy_pipeline_mongodb.utils.process_item.process_item')
 
     @classmethod
     def from_crawler(cls, crawler: Crawler, *args, **kwargs):
@@ -48,7 +52,6 @@ class PipelineMongoDBAsync(GenericPipeline):
     def open_spider(self, spider: Spider):
         self.cnx = ConnectionPool(self.uri, codec_options=self.codec_options)
         self.db = getattr(self.cnx, self.settings[MONGODB_DATABASE])
-
         self.coll = getattr(self.db, self.settings[MONGODB_COLLECTION])
         self.coll.with_options(codec_options=self.codec_options)
 
@@ -78,12 +81,7 @@ class PipelineMongoDBAsync(GenericPipeline):
 
     @inlineCallbacks
     def process_item(self, item: Item, spider: Spider) -> Generator:
-        process_item = load_object(
-            self.settings[MONGODB_PROCESS_ITEM]
-            if self.settings.get(MONGODB_PROCESS_ITEM)
-            else 'scrapy_pipeline_mongodb.utils.process_item.process_item'
-        )
-        result = yield process_item(self, item, spider)
+        result = yield self._process_item(self, item, spider)
         return result
 
     @inlineCallbacks
