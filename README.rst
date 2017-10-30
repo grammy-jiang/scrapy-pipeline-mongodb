@@ -22,26 +22,23 @@ Overview
 ========
 
 Scrapy is a great framework for web crawling. This package provides two
-pipelines to save items into MongoDB in a async or sync way. And also provide a
-a highly customized way to interact with MongoDB in a async or sync way.
+pipelines of saving items into MongoDB in a async or sync way for scrapy. And
+also provide a highly customized way to interact with MongoDB in a async or sync
+way:
 
-* Save an item and get Object ID from this pipeline
+* Save an item and get Object ID with this pipeline
 
-* Update an item and get Object ID from this pipeline
+* Update an item and get Object ID with this pipeline
 
 Requirements
 ============
 
 * Txmongo, a async MongoDB driver with Twisted
 
-* Not support Python 2.7
+* Tests on Python 3.5
 
-* Tests on Python 3.5, but it should work on other version higher then Python
-  3.3
-
-* Tests on Linux, but it's a pure python module, it should work on other
-  platforms with official python and Twisted supported, e.g. Windows, Mac OSX,
-  BSD
+* Tests on Linux, but it's a pure python module, should work on other platforms
+  with official python and Twisted supported
 
 Installation
 ============
@@ -122,17 +119,16 @@ MONGODB_OPTIONS_*
 
 Options can be attached when the pipeline start to connect to MongoBD.
 
-If any options are needed, the name of the option can be with the prefix
-`MONGODB_OPTIONS_`, the pipeline will parse it.
+If any options are needed, the option can be set with the prefix
+``MONGODB_OPTIONS_``, the pipeline will parse it.
 
 For example:
 
 +---------------+-------------------------------+
-| option name   | in `settings.py`              |
+| option name   | in ``settings.py``            |
 +---------------+-------------------------------+
 | authMechanism | MONGODB_OPTIONS_authMechanism |
 +---------------+-------------------------------+
-
 
 For more options, please refer to the page:
 
@@ -146,18 +142,19 @@ MONGODB_INDEXES
 A list of the indexes defined in this setting will be created when the spider is
 open.
 
-If the index has already existed, there will be no warning or error raised.
+If the index has already existed, the warning or error will be suspended.
 
 MONGODB_PROCESS_ITEM
 --------------------
 
-To highly customize to interact with MongoDB, this pipeline provide a setting to
-define the function `process_item`. And with this package, there is one default
-function: just call the method `insert_one` of the collection to save the item
-into MongoDB, then return the item.
+This pipeline provides a setting to define the function ``process_item``, which
+can help to customize the way to interact with MongoDB. With this package there
+is one default function provided: calling the method ``insert_one`` of
+``collection`` to save the item into MongoDB, then return the item.
 
-If a customize is provided to replace the default one, please note the behavior
-should follow the requirement which is clearly written in the scrapy documents:
+If a customize method is provided to replace the default one, please note the
+behavior should follow the requirement which is clearly written in the scrapy
+documents:
 
 `Item Pipeline — Scrapy 1.4.0 documentation`_
 
@@ -169,19 +166,28 @@ Build-in Functions For Processing Item
 scrapy_pipeline_mongodb.utils.process_item.process_item
 -------------------------------------------------------
 
-This is a build-in function to call the method `insert_one` of the collection,
+This is a build-in function to call the method ``insert_one`` of ``collection``,
 and return the item.
 
-To use this function, in `settings.py`::
+To use this function, in ``settings.py``::
 
     MONGODB_PROCESS_ITEM = 'scrapy_pipeline_mongodb.utils.process_item.process_item'
 
 NOTE
 ====
 
-The drivers may have different api for the same operation, this pipeline adopts
-txmongo as the async driver for MongoDB, please read the relative documents to
-make sure the customized functions can run fluently in this pipeline.
+The database drivers may have different api for the same operation, this
+pipeline adopts txmongo as the async driver for MongoDB. Please read the
+relative documents to make sure the customized method can run fluently in this
+pipeline.
+
+* `Welcome to TxMongo’s documentation!`_
+
+.. _`Welcome to TxMongo’s documentation!`: https://txmongo.readthedocs.io/en/latest/
+
+* `pymongo – Python driver for MongoDB`_
+
+.. _`pymongo – Python driver for MongoDB`: http://api.mongodb.com/python/current/api/pymongo/
 
 TODO
 ====
