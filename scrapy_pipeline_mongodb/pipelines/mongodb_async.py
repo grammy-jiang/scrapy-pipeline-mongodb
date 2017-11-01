@@ -12,7 +12,6 @@ from twisted.internet.defer import inlineCallbacks
 from txmongo import filter as txfilter
 from txmongo.connection import ConnectionPool
 
-from . import GenericPipeline
 from ..settings.default_settings import MONGODB_COLLECTION
 from ..settings.default_settings import MONGODB_DATABASE
 from ..settings.default_settings import MONGODB_INDEXES
@@ -24,9 +23,10 @@ from ..utils.get_mongodb_uri import get_mongodb_uri
 logger = logging.getLogger(__name__)
 
 
-class PipelineMongoDBAsync(GenericPipeline):
+class PipelineMongoDBAsync(object):
     def __init__(self, crawler: Crawler, *args, **kwargs):
-        super().__init__(crawler, *args, **kwargs)
+        self.crawler = crawler
+        self.settings = crawler.settings
 
         self.uri = get_mongodb_uri(self.settings)
         self.codec_options = DEFAULT_CODEC_OPTIONS.with_options(
@@ -34,10 +34,12 @@ class PipelineMongoDBAsync(GenericPipeline):
         self.cnx = None
         self.db = None
         self.coll = None
-        self._process_item = load_object(
-            self.settings[MONGODB_PROCESS_ITEM]
-            if self.settings.get(MONGODB_PROCESS_ITEM)
-            else 'scrapy_pipeline_mongodb.utils.process_item.process_item')
+
+        self.__dict__.update({
+            'process_item': (load_object(self.settings[MONGODB_PROCESS_ITEM])
+                             if self.settings.get(MONGODB_PROCESS_ITEM)
+                             else lambda item, spider: item)
+        })
 
     @classmethod
     def from_crawler(cls, crawler: Crawler, *args, **kwargs):
@@ -80,13 +82,8 @@ class PipelineMongoDBAsync(GenericPipeline):
                     self.uri)
 
     @inlineCallbacks
-    def process_item(self, item: Item, spider: Spider) -> Generator:
-        result = yield self._process_item(self, item, spider)
-        return result
-
-    @inlineCallbacks
-    def process_item_insert_one(self, item: Item, spider: Spider) -> Generator:
-        result = yield self.coll.insert_one(item)
+    def process_item_insert_one(self, doc: Dict, spider: Spider) -> Generator:
+        result = yield self.coll.insert_one(doc)
         return result
 
     @inlineCallbacks

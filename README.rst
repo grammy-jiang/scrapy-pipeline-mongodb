@@ -52,7 +52,7 @@ Or put this middleware just beside the scrapy project.
 Documentation
 =============
 
-Block Inspector in spider middleware, in ``settings.py``, for example::
+Set Block Inspector in ``ITEMPIPELINES`` in ``settings.py``, for example::
 
     from txmongo.filter import ASCENDING
     from txmongo.filter import DESCENDING
