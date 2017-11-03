@@ -22,9 +22,9 @@ Overview
 ========
 
 Scrapy is a great framework for web crawling. This package provides two
-pipelines of saving items into MongoDB in a async or sync way for scrapy. And
-also provide a highly customized way to interact with MongoDB in a async or sync
-way:
+pipelines of saving items into MongoDB in both async and sync ways for scrapy.
+Also it provides a highly customized way to interact with MongoDB in both async
+and sync ways:
 
 * Save an item and get Object ID with this pipeline
 
@@ -160,13 +160,13 @@ documents:
 
 .. _`Item Pipeline — Scrapy 1.4.0 documentation`: https://doc.scrapy.org/en/latest/topics/item-pipeline.html#writing-your-own-item-pipelin
 
-Build-in Functions For Processing Item
+Built-in Functions For Processing Item
 ======================================
 
 scrapy_pipeline_mongodb.utils.process_item.process_item
 -------------------------------------------------------
 
-This is a build-in function to call the method ``insert_one`` of ``collection``,
+This is a built-in function to call the method ``insert_one`` of ``collection``,
 and return the item.
 
 To use this function, in ``settings.py``::
