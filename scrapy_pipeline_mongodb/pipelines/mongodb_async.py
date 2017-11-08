@@ -1,11 +1,11 @@
 import logging
+from types import MethodType
 from typing import Dict
 from typing import Generator
 
 from bson.codec_options import DEFAULT_CODEC_OPTIONS
 from pymongo.errors import OperationFailure
 from scrapy.crawler import Crawler
-from scrapy.item import Item
 from scrapy.spiders import Spider
 from scrapy.utils.misc import load_object
 from twisted.internet.defer import inlineCallbacks
@@ -35,11 +35,17 @@ class PipelineMongoDBAsync(object):
         self.db = None
         self.coll = None
 
-        self.__dict__.update({
-            'process_item': (load_object(self.settings[MONGODB_PROCESS_ITEM])
-                             if self.settings.get(MONGODB_PROCESS_ITEM)
-                             else lambda item, spider: item)
-        })
+        self.process_item = MethodType(
+            (load_object(self.settings[MONGODB_PROCESS_ITEM])
+             if self.settings.get(MONGODB_PROCESS_ITEM)
+             else lambda pipeline, item, spider: item),
+            self
+        )
+        # self.__dict__.update({
+        #     'process_item': (load_object(self.settings[MONGODB_PROCESS_ITEM])
+        #                      if self.settings.get(MONGODB_PROCESS_ITEM)
+        #                      else lambda item, spider: item)
+        # })
 
     @classmethod
     def from_crawler(cls, crawler: Crawler, *args, **kwargs):
