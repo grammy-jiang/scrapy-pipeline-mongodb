@@ -41,11 +41,6 @@ class PipelineMongoDBAsync(object):
              else lambda pipeline, item, spider: item),
             self
         )
-        # self.__dict__.update({
-        #     'process_item': (load_object(self.settings[MONGODB_PROCESS_ITEM])
-        #                      if self.settings.get(MONGODB_PROCESS_ITEM)
-        #                      else lambda item, spider: item)
-        # })
 
     @classmethod
     def from_crawler(cls, crawler: Crawler, *args, **kwargs):
