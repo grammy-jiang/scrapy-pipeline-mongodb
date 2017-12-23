@@ -1,5 +1,4 @@
 import logging
-from types import MethodType
 from typing import Dict
 from typing import Generator
 
@@ -35,15 +34,11 @@ class PipelineMongoDBAsync(object):
         self.db = None
         self.coll = None
 
-        self.process_item = MethodType(
-            (load_object(self.settings[MONGODB_PROCESS_ITEM])
-             if self.settings.get(MONGODB_PROCESS_ITEM)
-             else lambda pipeline, item, spider: item),
-            self
-        )
-
     @classmethod
     def from_crawler(cls, crawler: Crawler, *args, **kwargs):
+        cls.process_item = (load_object(crawler.settings[MONGODB_PROCESS_ITEM])
+                            if crawler.settings.get(MONGODB_PROCESS_ITEM)
+                            else lambda pipeline, item, spider: item)
         o = cls(crawler=crawler, *args, **kwargs)
         crawler.signals.connect(o.process_item_insert_one,
                                 signal=insert_for_objectid)
