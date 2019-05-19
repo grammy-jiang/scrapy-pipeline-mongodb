@@ -1,4 +1,4 @@
-This project is deprecated. Please go to `scrapedia/scrapy-pipelines: Pipelines for scrapy`_ to get the further update.
+**This project is deprecated. Please go to `scrapedia/scrapy-pipelines: Pipelines for scrapy`_ to get the further update.**
 
 .. _`scrapedia/scrapy-pipelines: Pipelines for scrapy`: https://github.com/scrapedia/scrapy-pipelines
 
